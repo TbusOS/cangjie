@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Cangjie capture hook (OPTIONAL) — lightweight session journaler.
+# Whetstone capture hook (OPTIONAL) — lightweight session journaler.
 #
 # The skill works WITHOUT this (run /distill manually). Wire it only if you want
 # auto-capture. Heavy lifting is in /distill; this records pointers only
@@ -19,7 +19,7 @@ SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 JOURNAL="$SKILL_DIR/journal/sessions.jsonl"
 
 if [ "${1:-}" = "--clean" ]; then
-  : > "$JOURNAL" 2>/dev/null && echo "cangjie: journal cleaned ($JOURNAL)" || echo "cangjie: nothing to clean"
+  : > "$JOURNAL" 2>/dev/null && echo "whetstone: journal cleaned ($JOURNAL)" || echo "whetstone: nothing to clean"
   exit 0
 fi
 

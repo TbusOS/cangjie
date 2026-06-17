@@ -1,7 +1,7 @@
 # Skill 库打包 / 部署 (library pack & deploy)
 
-cangjie 的产物是 skill 包;`bin/pack.sh` / `bin/deploy.sh` 把**整个本地 skill 库**打包、搬到另一台机部署。
-**公开 cangjie 仓库提供这套通用方案;真实数据(你的 skill 库)只在你自己的私有 repo / 本地包里。**
+whetstone 的产物是 skill 包;`bin/pack.sh` / `bin/deploy.sh` 把**整个本地 skill 库**打包、搬到另一台机部署。
+**公开 whetstone 仓库提供这套通用方案;真实数据(你的 skill 库)只在你自己的私有 repo / 本地包里。**
 
 ## 两种模式(脱敏铁线,见 CLAUDE.md「工具 / 产物分离」)
 
@@ -19,7 +19,7 @@ bin/pack.sh --only verified-boot,sdk-migration   # 只打指定
 bin/pack.sh --src /path/to/skills --out my.tar.gz
 
 # 部署到新机(默认 dest = ~/.claude/skills)
-bin/deploy.sh cangjie-skills-<ts>.tar.gz             # 已存在的 skill 默认 SKIP
+bin/deploy.sh whetstone-skills-<ts>.tar.gz             # 已存在的 skill 默认 SKIP
 bin/deploy.sh my.tar.gz --dest /path/to/skills --force   # 覆盖已有
 ```
 
@@ -35,7 +35,7 @@ bin/deploy.sh my.tar.gz --dest /path/to/skills --force   # 覆盖已有
 # 机器 A:把 skill 库装填进私有 repo(或直接 cp 你的 skill 目录进去),push
 # 机器 B:
 git clone <你的私有 repo>
-cangjie/bin/deploy.sh <私有 repo>/<pack>.tar.gz       # 或直接 cp skill 目录进 ~/.claude/skills
+whetstone/bin/deploy.sh <私有 repo>/<pack>.tar.gz       # 或直接 cp skill 目录进 ~/.claude/skills
 ```
 
 - 好处:`git clone` 即部署 + 版本历史 + 随时同步。

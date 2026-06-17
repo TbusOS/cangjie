@@ -1,6 +1,6 @@
 # 工程经验提炼框架 (Engineering Knowledge Extraction Framework)
 
-> Cangjie 的 L1-L4 分层 schema。配套主入口 `../SKILL.md`(提炼流程)。
+> Whetstone 的 L1-L4 分层 schema。配套主入口 `../SKILL.md`(提炼流程)。
 > worked example(§5)用 generic 示例,可直接公开。
 
 从一次开发会话里,把混在一起的工程知识拆成 4 层,各归各位:

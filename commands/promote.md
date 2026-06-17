@@ -1,5 +1,5 @@
 ---
-description: "Promote an approved cangjie proposal from inbox/ into the live skill library. Human gate already passed in /distill. Trigger: 入库 / promote proposal / 把提案合进 skill 库."
+description: "Promote an approved whetstone proposal from inbox/ into the live skill library. Human gate already passed in /distill. Trigger: 入库 / promote proposal / 把提案合进 skill 库."
 ---
 
 # /promote

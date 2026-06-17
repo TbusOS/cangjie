@@ -1,12 +1,12 @@
 ---
-name: cangjie
+name: whetstone
 description: "Distill a finished dev session into proposals for a self-growing local skill library. Mines the transcript + git diff + pitfalls, decomposes what was learned into 4 layers (L1 principle / L2 method+pitfall / L3 platform-params / L4 state) via references/extraction-framework.md, reconciles against existing skills (dedup / supersede / conflict), and writes a human-reviewed proposal into inbox/. Self-contained, zero runtime dependency. Trigger words: 蒸馏这次 / distill this session / 把这次经验做成 skill / 开发完记录经验 / capture what I learned. Use after finishing a feature or bugfix to capture the reusable part."
 ---
 
-# Cangjie · 仓颉 — Distiller 提炼流程 (Session → Skill)
+# Whetstone · 磨刀石 — Distiller 提炼流程 (Session → Skill)
 
 > 配套 `references/extraction-framework.md`(L1-L4 分层 schema)。本文件管「怎么从一坨会话里把 schema 套出来」。
-> **Runtime 中立 + 零运行时依赖**:本文件是 Cangjie 蒸馏器的 Agent Skill 入口,任何 skills-compatible runtime(Claude Code / Codex / Cursor …)都能调。产物是可移植 skill 包(见 `spec/skill-package.md`)。engram(同步)/ llm-wiki(发布)/ darwin-skill(打分)均为**可选** sink,装不装都能跑。
+> **Runtime 中立 + 零运行时依赖**:本文件是 Whetstone 蒸馏器的 Agent Skill 入口,任何 skills-compatible runtime(Claude Code / Codex / Cursor …)都能调。产物是可移植 skill 包(见 `spec/skill-package.md`)。engram(同步)/ llm-wiki(发布)/ darwin-skill(打分)均为**可选** sink,装不装都能跑。
 
 把一次**已经发生**的开发会话(transcript + git diff + 踩坑),
 按 extraction-framework 拆成 L1-L4,对账已有 skill 库,产出**提案**交人审,
@@ -143,7 +143,7 @@ for 每条学习时刻:
    - 每条的溯源 + 置信度
    - 需要决策的:冲突项、low-confidence 项
 3. 🔴 STOP:等人审
-   - 批准 → /promote 把 diff 合进正式库(可选:若另装了 darwin-skill,可加跑其打分;非必须,cangjie 不依赖它)
+   - 批准 → /promote 把 diff 合进正式库(可选:若另装了 darwin-skill,可加跑其打分;非必须,whetstone 不依赖它)
    - 拒/改 → 回 Phase 3 调整
 4. 无论入库与否,原始学习时刻都已在 journal 留底(可回溯)
 ```

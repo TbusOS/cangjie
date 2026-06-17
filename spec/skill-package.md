@@ -1,6 +1,6 @@
 # 可移植 Skill 包格式规范 (Portable Skill Package Spec)
 
-Cangjie 的**交付物**。一个 skill 包是一个**自包含目录**,符合 Agent Skills 标准、
+Whetstone 的**交付物**。一个 skill 包是一个**自包含目录**,符合 Agent Skills 标准、
 runtime 中立——拖进任何 skills-compatible runtime 的 skills 目录即得能力。
 
 ## 目录布局

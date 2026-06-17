@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# cangjie pack — package a local skill library into a portable tarball + manifest.
+# whetstone pack — package a local skill library into a portable tarball + manifest.
 #
 # Runtime-neutral: --src is any skills dir; default is the Claude Code skills dir,
-# override with --src (or env CANGJIE_SKILLS_DIR) for other runtimes.
+# override with --src (or env WHETSTONE_SKILLS_DIR) for other runtimes.
 # Excludes per-skill runtime products (journal/ inbox/ shots/ .git/ *.bak).
 #
 #   bin/pack.sh [--src <skills-dir>] [--out <pack.tar.gz>] [--only name1,name2] [--clean]
@@ -15,27 +15,27 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 STAGE="$REPO_DIR/.pack-stage"
 
-SRC="${CANGJIE_SKILLS_DIR:-$HOME/.claude/skills}"
+SRC="${WHETSTONE_SKILLS_DIR:-$HOME/.claude/skills}"
 OUT=""; ONLY=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --src)   SRC="$2"; shift 2;;
     --out)   OUT="$2"; shift 2;;
     --only)  ONLY="$2"; shift 2;;
-    --clean) rm -rf "$STAGE" "$REPO_DIR"/cangjie-skills-*.tar.gz; echo "cangjie pack: cleaned"; exit 0;;
+    --clean) rm -rf "$STAGE" "$REPO_DIR"/whetstone-skills-*.tar.gz; echo "whetstone pack: cleaned"; exit 0;;
     *) echo "unknown arg: $1" >&2; exit 2;;
   esac
 done
 
 [ -d "$SRC" ] || { echo "src not found: $SRC" >&2; exit 1; }
 TS="$(date -u +%Y%m%d-%H%M%S)"
-[ -n "$OUT" ] || OUT="$REPO_DIR/cangjie-skills-$TS.tar.gz"
+[ -n "$OUT" ] || OUT="$REPO_DIR/whetstone-skills-$TS.tar.gz"
 # tar runs inside $STAGE, so a relative --out would resolve there and be lost — make it absolute.
 case "$OUT" in /*) : ;; *) OUT="$(cd "$(dirname "$OUT")" 2>/dev/null && pwd)/$(basename "$OUT")";; esac
 
 rm -rf "$STAGE"; mkdir -p "$STAGE/skills"
 MANIFEST="$STAGE/MANIFEST.txt"
-{ echo "# cangjie skill-library pack"
+{ echo "# whetstone skill-library pack"
   echo "# packed: $(date -u +%Y-%m-%dT%H:%M:%SZ)   src: $SRC"
   echo ""; } > "$MANIFEST"
 
@@ -60,4 +60,4 @@ done
 
 ( cd "$STAGE" && tar czf "$OUT" MANIFEST.txt skills )
 rm -rf "$STAGE"
-echo "cangjie pack: $count skill(s) → $OUT"
+echo "whetstone pack: $count skill(s) → $OUT"
