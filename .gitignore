@@ -8,3 +8,8 @@ inbox/*
 
 # 设计评审产物(截图)
 shots/
+
+# pack/deploy 产物(运行时,不入库)
+.pack-stage/
+.deploy-stage/
+*.tar.gz
