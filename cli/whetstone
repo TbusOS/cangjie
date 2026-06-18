@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+# whetstone — runtime-agnostic CLI entry point (noun-verb, zero deps, pure bash).
+#
+# Wraps the scriptable plumbing so Whetstone is usable outside an agent runtime
+# (CI, scripting, muscle memory). The one thing it does NOT do is run `distill`:
+# mining a session + layering L1-L4 is agent work — the CLI tells you to invoke
+# the /distill skill instead of pretending to do it.
+#
+#   whetstone <command> [args...]
+#
+# Install: symlink onto PATH, e.g.  ln -s "$PWD/cli/whetstone" ~/.local/bin/whetstone
+# (or just call ./cli/whetstone). Paths are resolved relative to this file, so the
+# whole repo can be cloned anywhere.
+
+export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+export PYTHONNOUSERSITE=1
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+WHETSTONE_VERSION="0.1.0"
+
+usage() {
+  cat <<EOF
+whetstone $WHETSTONE_VERSION — distill dev sessions into portable Agent Skills
+
+usage: whetstone <command> [args]
+
+skill library (scriptable):
+  pack [--src D] [--out F] [--only a,b]   package a skill library -> tarball + MANIFEST
+  deploy <pack.tar.gz> [--dest D] [--force]  install a pack into a skills dir (collision-safe)
+  promote <proposal> [--list] [--dry-run] [--force]
+                                          apply an approved inbox/ proposal to the live library
+  sync engram <skill> [--dry-run]         push a skill into engram (optional sink)
+
+capture (optional, runtime-specific):
+  capture [--clean]                       the Claude Code session journaler (see adapters/capture/)
+  selftest                                run the capture hook selftest
+  journal                                 list captured sessions
+
+agent-only:
+  distill                                 (runs inside an agent runtime — see note below)
+
+misc:
+  version | help
+
+distill is NOT a CLI op: mining the transcript + git diff and layering L1-L4 is
+agent work. In your runtime invoke the /distill skill (or run SKILL.md Phase 0-5).
+EOF
+}
+
+journal_cmd() {
+  local J="$REPO_DIR/journal/sessions.jsonl"
+  [ -s "$J" ] || { echo "no captured sessions yet ($J)"; return 0; }
+  if command -v jq >/dev/null 2>&1; then
+    jq -r '"\(.ts)  head=\(.head // "-")  Δ\(.changed // "-")  \(.cwd)"' "$J"
+  else
+    cat "$J"
+  fi
+}
+
+sync_cmd() {
+  local backend="${1:-}"; [ $# -gt 0 ] && shift
+  case "$backend" in
+    engram)   exec bash "$REPO_DIR/adapters/sync/engram.sh" "$@";;
+    llm-wiki) echo "llm-wiki sync is doc-only for now — see adapters/sync/llm-wiki.md" >&2; exit 1;;
+    *)        echo "usage: whetstone sync engram <skill> [--dry-run]" >&2; exit 2;;
+  esac
+}
+
+distill_msg() {
+  cat >&2 <<EOF
+distill runs inside an agent runtime, not the CLI.
+  - In Claude Code (or any skill-aware runtime): invoke the /distill skill.
+  - Or open SKILL.md and run Phase 0-5 by hand.
+The CLI handles the deterministic steps around it: promote / pack / deploy / sync.
+EOF
+  exit 2
+}
+
+cmd="${1:-help}"; [ $# -gt 0 ] && shift
+case "$cmd" in
+  pack)              exec bash "$REPO_DIR/bin/pack.sh" "$@";;
+  deploy)            exec bash "$REPO_DIR/bin/deploy.sh" "$@";;
+  promote)           exec bash "$REPO_DIR/bin/promote.sh" "$@";;
+  capture)           exec bash "$REPO_DIR/adapters/capture/claude-code.sh" "$@";;
+  selftest)          exec bash "$REPO_DIR/adapters/capture/selftest.sh" "$@";;
+  journal)           journal_cmd "$@";;
+  sync)              sync_cmd "$@";;
+  distill)           distill_msg;;
+  -V|--version|version) echo "whetstone $WHETSTONE_VERSION";;
+  -h|--help|help|"") usage;;
+  *) echo "unknown command: $cmd" >&2; echo "run 'whetstone help'" >&2; exit 2;;
+esac

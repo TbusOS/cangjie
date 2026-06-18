@@ -15,7 +15,9 @@ export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 export PYTHONNOUSERSITE=1
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SKILL_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+# capture.sh lives at <skill>/adapters/capture/ — skill root is two levels up,
+# where journal/ sits (the same dir /distill reads). One '..' would land in adapters/.
+SKILL_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
 JOURNAL="$SKILL_DIR/journal/sessions.jsonl"
 
 if [ "${1:-}" = "--clean" ]; then
@@ -28,7 +30,8 @@ PAYLOAD="$(cat 2>/dev/null || true)"   # Claude Code hook JSON on stdin (may be 
 
 field() {
   local key="$1"
-  if command -v jq >/dev/null 2>&1; then
+  # WHETSTONE_FORCE_PY=1 skips jq to exercise the python fallback (used by selftest).
+  if [ -z "${WHETSTONE_FORCE_PY:-}" ] && command -v jq >/dev/null 2>&1; then
     printf '%s' "$PAYLOAD" | jq -r --arg k "$key" '.[$k] // empty' 2>/dev/null
   elif command -v python3 >/dev/null 2>&1; then
     printf '%s' "$PAYLOAD" | python3 -c "import sys,json
