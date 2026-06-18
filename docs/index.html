@@ -86,6 +86,7 @@
     <a href="#flow"><span class="lang-en">How it works</span><span class="lang-zh">流程</span></a>
     <a href="#install"><span class="lang-en">Install</span><span class="lang-zh">安装</span></a>
     <a href="#migrate"><span class="lang-en">Move</span><span class="lang-zh">迁移</span></a>
+    <a href="#index-hygiene"><span class="lang-en">Index</span><span class="lang-zh">索引</span></a>
   </div>
   <div style="display:flex; gap:var(--space-3); align-items:center;">
     <button type="button" class="lang-toggle" aria-label="Switch language">中 / EN</button>
@@ -589,6 +590,80 @@
         <li><span class="lang-en">Deploy the library into your skills folder</span><span class="lang-zh">把库 deploy 进 skills 目录</span> — <code>cp -r whetstone-skills-private/skills/* ~/.claude/skills/</code> <span style="color:var(--anth-text-secondary);"><span class="lang-en">or </span><span class="lang-zh">或 </span><code>whetstone/bin/deploy.sh</code></span></li>
         <li><span class="lang-en">Done — the whole skill library is back, on any runtime.</span><span class="lang-zh">完成 —— 整套 skill 库回来了，任何 runtime 都行。</span></li>
       </ol>
+    </div>
+  </div>
+</section>
+
+<!-- Index hygiene -->
+<section class="anth-section" id="index-hygiene">
+  <div class="anth-container" style="max-width:760px; margin:0 auto var(--space-7); text-align:center;">
+    <span class="anth-badge"><span class="lang-en">Index hygiene</span><span class="lang-zh">索引卫生</span></span>
+    <h2 style="margin-top:var(--space-3);"><span class="lang-en">More skills shouldn't mean more noise.</span><span class="lang-zh">skill 越多，菜单不该越吵。</span></h2>
+    <p style="color:var(--anth-text-secondary); font-size:17px; margin-top:var(--space-3); font-family:var(--font-body);">
+      <span class="lang-en">A runtime keeps every skill's <strong>name + description</strong> in context to choose between them — that menu is where noise lives, not in the bodies (those load only when a skill is picked). As the library grows, vague or overlapping descriptions make the model pick the wrong skill or miss the right one. Three tools keep the menu sharp.</span>
+      <span class="lang-zh">runtime 把每个 skill 的 <strong>name + description</strong> 常驻上下文来做选择 —— 噪声就在这张菜单里，不在正文（正文只在 skill 被选中时才加载）。库一大，模糊或重叠的描述会让模型挑错、漏挑。三个工具把菜单维持清爽。</span>
+    </p>
+  </div>
+
+  <div class="anth-container anth-container--wide">
+    <figure>
+      <svg role="img" aria-label="The selection menu holds every skill's name and description and is always in the model's context, which is where description noise lives; skill bodies load only when a skill is picked, so they are not noise" viewBox="0 0 1180 296" style="display:block; width:100%; max-width:1180px; height:auto;">
+        <defs>
+          <pattern id="ixdots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="12" cy="12" r="1" fill="#141413" opacity="0.05"/></pattern>
+          <filter id="ixcard" x="-10%" y="-30%" width="120%" height="160%"><feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.06"/></filter>
+        </defs>
+        <rect x="0" y="0" width="1180" height="296" rx="16" fill="#fbfaf6"/>
+        <rect x="0" y="0" width="1180" height="296" rx="16" fill="url(#ixdots)"/>
+
+        <rect x="40" y="46" width="640" height="210" rx="12" fill="#fdf3ee" stroke="#e8bba8"/>
+        <rect x="40" y="46" width="4" height="210" rx="2" fill="#d97757"/>
+        <circle cx="66" cy="74" r="4" fill="#d97757"/>
+        <text x="78" y="78" font-family="Poppins,sans-serif" font-size="12.5" font-weight="700" fill="#141413">选择菜单 · 每个 skill 的 name + description · 常驻上下文</text>
+        <g font-family="Poppins,sans-serif" filter="url(#ixcard)">
+          <g transform="translate(62 92)"><rect width="596" height="30" rx="7" fill="#ffffff" stroke="#e3decf"/><circle cx="16" cy="15" r="3.5" fill="#788c5d"/><text x="30" y="19" font-size="11.5" fill="#141413">verified-boot — 验签信任链 / AVB / OTA 验签 …</text></g>
+          <g transform="translate(62 128)"><rect width="596" height="30" rx="7" fill="#ffffff" stroke="#e3decf"/><circle cx="16" cy="15" r="3.5" fill="#788c5d"/><text x="30" y="19" font-size="11.5" fill="#141413">partition-table — GPT 分区布局 / 扩容 / 缩容 …</text></g>
+          <g transform="translate(62 164)"><rect width="596" height="30" rx="7" fill="#ffffff" stroke="#e3decf"/><circle cx="16" cy="15" r="3.5" fill="#788c5d"/><text x="30" y="19" font-size="11.5" fill="#141413">sdk-migration — 大版本升级 / 冲突解决 / 三方对比 …</text></g>
+          <g transform="translate(62 200)"><rect width="596" height="30" rx="7" fill="#ffffff" stroke="#e3decf"/><circle cx="16" cy="15" r="3.5" fill="#788c5d"/><text x="30" y="19" font-size="11.5" fill="#141413">git-workflow — 操作前实测分支 / commit 规范 …</text></g>
+        </g>
+        <circle cx="66" cy="244" r="4" fill="#d97757"/>
+        <text x="78" y="248" font-family="Poppins,sans-serif" font-size="11" font-weight="600" fill="#c2613f">噪声就在这里：描述重叠 · 名字撞车 · 触发词模糊</text>
+
+        <rect x="712" y="46" width="428" height="210" rx="12" fill="#f3f2ec" stroke="#dcdacd"/>
+        <circle cx="738" cy="74" r="4" fill="#a8a496"/>
+        <text x="750" y="78" font-family="Poppins,sans-serif" font-size="12.5" font-weight="700" fill="#6b6a5f">skill 正文 · 只在被选中时加载</text>
+        <g font-family="Poppins,sans-serif">
+          <g transform="translate(734 96)"><rect width="384" height="30" rx="7" fill="#ffffff" stroke="#e3decf"/><text x="16" y="19" font-size="11.5" fill="#8a8779">原理与约束 + 坑库 pitfalls.md</text></g>
+          <g transform="translate(734 132)"><rect width="384" height="30" rx="7" fill="#ffffff" stroke="#e3decf"/><text x="16" y="19" font-size="11.5" fill="#8a8779">平台参数 params/*.md</text></g>
+          <g transform="translate(734 168)"><rect width="384" height="30" rx="7" fill="#ffffff" stroke="#e3decf"/><text x="16" y="19" font-size="11.5" fill="#8a8779">诊断 SOP 与切面</text></g>
+        </g>
+        <text x="734" y="226" font-family="Poppins,sans-serif" font-size="11" fill="#8a8779">不进菜单 → 再多也不是噪声</text>
+
+        <g font-family="Poppins,sans-serif" font-size="11" fill="#6b6a5f" transform="translate(40 286)">
+          <circle cx="6" cy="-3" r="4" fill="#d97757"/><text x="16" y="0">在菜单里（算噪声）</text>
+          <circle cx="186" cy="-3" r="4" fill="#a8a496"/><text x="196" y="0">懒加载（不算）</text>
+        </g>
+      </svg>
+      <figcaption><span class="lang-en">Every name+description is always in context (left) — the menu where noise lives; bodies load only on selection (right), so they can't be noise.</span><span class="lang-zh">每个 name+description 都常驻上下文（左）—— 噪声所在的菜单；正文只在被选中时加载（右），所以不是噪声。</span></figcaption>
+    </figure>
+  </div>
+
+  <div class="anth-container anth-container--wide" style="margin-top:var(--space-7);">
+    <div class="mate-row">
+      <div class="mate-card">
+        <span class="opt"><span class="lang-en">Flag</span><span class="lang-zh">揪出来</span></span>
+        <h3>whetstone lint</h3>
+        <p><span class="lang-en">Scans the menu for missing triggers, overlapping trigger sets, and name near-collisions — before they rot selection. Tells intentional companions (-audit / -validator) from real clashes.</span><span class="lang-zh">扫菜单：缺触发词、触发词重叠、名字撞车 —— 在它们拖坏选择前揪出来。能分清故意的评估器对（-audit / -validator）和真撞车。</span></p>
+      </div>
+      <div class="mate-card">
+        <span class="opt"><span class="lang-en">Map</span><span class="lang-zh">分族</span></span>
+        <h3>whetstone index</h3>
+        <p><span class="lang-en">Groups skills into families (shared triggers, companions, cross-refs) and emits a browsable INDEX.md — one map for a library that keeps growing.</span><span class="lang-zh">按族聚类（共享触发词、评估器对、交叉引用），生成可浏览的 INDEX.md —— 给越长越大的库一张导航图。</span></p>
+      </div>
+      <div class="mate-card">
+        <span class="opt"><span class="lang-en">Prevent</span><span class="lang-zh">治本</span></span>
+        <h3><span class="lang-en">Description contract</span><span class="lang-zh">description 契约</span></h3>
+        <p><span class="lang-en">Every description carries a capability line, concrete triggers, and a boundary that pushes sibling skills apart. Baked into the template, so new skills are born clean.</span><span class="lang-zh">每条描述都带能力行、具体触发词、把同族推开的边界声明。写进模板，新 skill 出生就干净。</span></p>
+      </div>
     </div>
   </div>
 </section>
