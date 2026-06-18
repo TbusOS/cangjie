@@ -12,7 +12,7 @@ Checks (per skill):
   W  no trigger markers (触发词 / TRIGGER)   -> weak match signal
   W  in a family but no boundary line        -> risks colliding with peers
 Pairwise:
-  E/W name near-collision                    -> e.g. design-review vs design-review-framework
+  W   name near-collision                    -> e.g. foo-review vs foo-review-framework
   W  trigger-set overlap above threshold     -> two skills compete for the same prompts
 
 Runtime-neutral: --src is any skills dir (default WHETSTONE_SKILLS_DIR or ~/.claude/skills).

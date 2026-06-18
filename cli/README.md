@@ -42,6 +42,6 @@ The skill **selection menu** = every skill's `name` + `description`, always in t
 agent's context. As the library grows, vague or overlapping descriptions make the
 model pick the wrong skill or miss the right one. `lint` checks that menu against the
 description contract (extraction-framework §13): missing triggers, overlapping trigger
-sets, name near-collisions (e.g. `design-review` vs `design-review-framework`). `index`
+sets, name near-collisions (e.g. `foo-review` vs `foo-review-framework`). `index`
 emits a grouped `INDEX.md` for humans. Run `lint` after adding or editing any skill.
 

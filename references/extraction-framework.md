@@ -296,7 +296,7 @@ runtime 把**每个 skill 的 name + description** 拼成一张菜单**常驻上
 2. **触发词**:列具体触发短语,带标记 `触发词:` 或 `TRIGGER when`(模糊描述 = 弱匹配信号)。
 3. **边界声明**(同族 skill 必写):`DO NOT TRIGGER … use X` / `与 X 同族,不重复它`。把同族 skill 互相推开。
 4. **name 不前缀撞车**:kebab-case,且不能是另一个 skill 名字的段前缀
-   (反例:`design-review` vs `design-review-framework` —— 名字几乎一样,域完全不同,模型会挑错)。
+   (反例:`foo-review` vs `foo-review-framework` —— 名字几乎一样,域却完全不同,模型会挑错)。
 
 长度:控制在能力行 + 触发词 + 边界声明能说清的范围;**过长是菜单 token 成本**,过短没法匹配。
 
