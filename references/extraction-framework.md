@@ -298,6 +298,12 @@ runtime 把**每个 skill 的 name + description** 拼成一张菜单**常驻上
 4. **name 不前缀撞车**:kebab-case,且不能是另一个 skill 名字的段前缀
    (反例:`foo-review` vs `foo-review-framework` —— 名字几乎一样,域却完全不同,模型会挑错)。
 
+两个合法例外(lint 会自动降为 INFO,不算撞车):
+- **companion 后缀**:`-audit / -validator / -review / -critic` 等,且描述里引用了被评的 base
+  (如 `gated-dual-clone-audit` 评 `gated-dual-clone`)—— 是故意的评估器对,不是误撞。
+- **互相点名的触发重叠**:两个 skill 触发词高度重叠,但各自描述都点了对方名字(`…用 X 反向`)
+  —— 已互相区分方向,模型能挑对(如 `md-to-pdf` ◂▸ `doc-to-markdown`)。
+
 长度:控制在能力行 + 触发词 + 边界声明能说清的范围;**过长是菜单 token 成本**,过短没法匹配。
 
 **机械兜底**(库长大后靠工具,不靠人记):

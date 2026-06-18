@@ -14,6 +14,10 @@ Checks (per skill):
 Pairwise:
   W   name near-collision                    -> e.g. foo-review vs foo-review-framework
   W  trigger-set overlap above threshold     -> two skills compete for the same prompts
+Downgraded to INFO (acknowledged, not noise):
+  - companion suffix (-audit/-validator/...) whose description references the base
+    (e.g. gated-dual-clone-audit audits gated-dual-clone) — intentional, not a clash
+  - high trigger overlap where each description names the other (mutually disambiguated)
 
 Runtime-neutral: --src is any skills dir (default WHETSTONE_SKILLS_DIR or ~/.claude/skills).
 stdlib only. Exit 1 if any ERROR (or any WARNING with --strict).
@@ -34,6 +38,12 @@ FAMILY_T = 0.12         # trigger Jaccard >= this means "same family" (boundary 
 SEP = re.compile(r"[/、,，;；:：。.\s|·]+")
 TRIGGER_MARK = re.compile(r"触发词|TRIGGER", re.I)
 BOUNDARY_MARK = re.compile(r"DO NOT|不重复|同族|不触发|不适用|use .+-", re.I)
+# suffixes that denote an intentional companion skill (evaluator/checker of the base),
+# e.g. gated-dual-clone-audit audits gated-dual-clone. NOT a collision if the longer
+# skill's description references the base. Distinguishes good companions from accidental
+# prefix clashes (design-review-framework had "framework" — not a companion suffix).
+COMPANION_SUFFIX = {"audit", "validator", "review", "critic", "evaluator",
+                    "lint", "test", "check", "verify", "checker"}
 
 
 def parse_frontmatter(path):
@@ -126,6 +136,7 @@ def lint(skills):
         issues.append((sev, who, msg))
 
     trig = {s["name"]: trigger_tokens(s["desc"]) for s in skills}
+    by_name = {s["name"]: s for s in skills}
 
     # family membership: who shares triggers with whom
     family = {s["name"]: [] for s in skills}
@@ -138,9 +149,22 @@ def lint(skills):
                 family[a].append((b, jac))
                 family[b].append((a, jac))
             if jac >= OVERLAP_WARN:
-                add("W", f"{a} ~ {b}", f"trigger sets overlap (Jaccard={jac:.2f}) — they compete for the same prompts")
+                mutual = (re.search(r"\b" + re.escape(b) + r"\b", by_name[a]["desc"])
+                          and re.search(r"\b" + re.escape(a) + r"\b", by_name[b]["desc"]))
+                if mutual:
+                    add("I", f"{a} ◂▸ {b}", f"trigger overlap (Jaccard={jac:.2f}) but each description names the other — disambiguated, ok")
+                else:
+                    add("W", f"{a} ~ {b}", f"trigger sets overlap (Jaccard={jac:.2f}) — they compete for the same prompts; add a boundary line naming the other")
             if name_collision(a, b):
-                add("W", f"{a} ~ {b}", "name near-collision (segment prefix) — model can pick the wrong one. Fine IF it's an intentional variant (-audit/-validator) AND descriptions disambiguate; else rename")
+                sa, sb = a.split("-"), b.split("-")
+                short, long = (a, b) if len(sa) < len(sb) else (b, a)
+                extra = long.split("-")[len(short.split("-")):]
+                companion = (extra and all(s in COMPANION_SUFFIX for s in extra)
+                             and re.search(r"\b" + re.escape(short) + r"\b", by_name[long]["desc"]))
+                if companion:
+                    add("I", f"{short} ◂ {long}", f"intentional companion (-{'-'.join(extra)}): {long} audits/evaluates {short} and references it — ok")
+                else:
+                    add("W", f"{a} ~ {b}", "name near-collision (segment prefix) — model can pick the wrong one. Companion suffixes (-audit/-validator) that reference the base are fine; else rename")
 
     for s in skills:
         nm = s["name"]
