@@ -1,6 +1,10 @@
 ---
-name: <skill-name>
-description: "<做什么 + 何时用 + 触发词。runtime-neutral,一行,≤1024 字符>"
+name: <skill-name>   # kebab-case;不要是另一个 skill 名的段前缀(避免 foo-bar vs foo-bar-baz 撞车)
+# description 契约(见 extraction-framework §13;新增后跑 whetstone lint 校验):
+#   ① 能力行:一句话说做什么  ② 触发词:列具体短语,带「触发词:」或「TRIGGER when」
+#   ③ 边界声明(同族必写):「DO NOT TRIGGER … use X」/「与 X 同族,不重复它」
+# runtime-neutral,一行,长到说清能力+触发+边界即可(过长是菜单成本)。
+description: "<能力行>。触发词:<A / B / C>。与 <同族 skill> 同族,不重复它。"
 ---
 
 # <Skill 标题>

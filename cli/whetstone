@@ -31,6 +31,10 @@ skill library (scriptable):
                                           apply an approved inbox/ proposal to the live library
   sync engram <skill> [--dry-run]         push a skill into engram (optional sink)
 
+index hygiene (keep the selection menu clean as the library grows):
+  lint [--src D] [--strict] [--json]      flag empty/overlapping/colliding descriptions
+  index [--src D] [--out F]               generate a grouped INDEX.md catalog
+
 capture (optional, runtime-specific):
   capture [--clean]                       the Claude Code session journaler (see adapters/capture/)
   selftest                                run the capture hook selftest
@@ -81,6 +85,8 @@ case "$cmd" in
   pack)              exec bash "$REPO_DIR/bin/pack.sh" "$@";;
   deploy)            exec bash "$REPO_DIR/bin/deploy.sh" "$@";;
   promote)           exec bash "$REPO_DIR/bin/promote.sh" "$@";;
+  lint)              command -v python3 >/dev/null 2>&1 || { echo "lint needs python3" >&2; exit 3; }; exec python3 "$REPO_DIR/bin/lint.py" "$@";;
+  index)             command -v python3 >/dev/null 2>&1 || { echo "index needs python3" >&2; exit 3; }; exec python3 "$REPO_DIR/bin/index.py" "$@";;
   capture)           exec bash "$REPO_DIR/adapters/capture/claude-code.sh" "$@";;
   selftest)          exec bash "$REPO_DIR/adapters/capture/selftest.sh" "$@";;
   journal)           journal_cmd "$@";;
