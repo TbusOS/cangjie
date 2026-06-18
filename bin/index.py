@@ -22,6 +22,21 @@ import lint  # noqa: E402  (sibling module: parse_frontmatter / trigger_tokens /
 GENERIC_SEG = {"workflow", "tool", "dev", "to", "md", "pdf", "markdown", "the", "for", "of"}
 SUMMARY_CUT = re.compile(r"触发词|TRIGGER|DO NOT|。|\. ", re.I)
 SUMMARY_MAX = 110
+# A name mention preceded by one of these is a BOUNDARY ref ("not X / use X instead /
+# 不重复 X") — i.e. "I am distinct from X", the opposite of a family relationship — so it
+# must NOT create a family edge. Without this, the boundary lines we add for hygiene would
+# ironically glue distinct skills together (e.g. sdk-code-review's "不重复 design-review"
+# pulled it into the design family).
+BOUNDARY_CUE = re.compile(r"(不重复|不是|不同|而非|区别|反向|无关|见|use|not|instead|DO NOT)", re.I)
+
+
+def family_ref(desc, name):
+    """True only if `desc` cites `name` as a genuine family link (e.g. 'evaluator for X'),
+    not as a boundary ('not X' / 'use X instead' / '不重复 X')."""
+    for m in re.finditer(r"\b" + re.escape(name) + r"\b", desc):
+        if not BOUNDARY_CUE.search(desc[max(0, m.start() - 30):m.start()]):
+            return True
+    return False
 
 
 def summary(desc):
@@ -59,8 +74,8 @@ def build_families(skills):
             a, b = names[i], names[j]
             edge = (lint.jaccard(trig[a], trig[b]) >= lint.FAMILY_T
                     or lint.name_collision(a, b)
-                    or re.search(r"\b" + re.escape(b) + r"\b", by_name[a]["desc"])
-                    or re.search(r"\b" + re.escape(a) + r"\b", by_name[b]["desc"]))
+                    or family_ref(by_name[a]["desc"], b)
+                    or family_ref(by_name[b]["desc"], a))
             if edge:
                 union(a, b)
 
